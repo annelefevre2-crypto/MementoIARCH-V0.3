@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="style.css" />
 
   <!-- Lib pour scan QR (caméra + fichier) -->
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <!-- IMPORTANT : chemin conforme à la doc officielle -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <!-- Lib pour génération de QR codes -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -30,7 +31,6 @@
         </div>
       </div>
       <div class="header-right">
-        <!-- Sélecteur de langue (statique pour l’instant) -->
         <button class="lang-switch">
           <span>FR</span>
           <span class="lang-switch-arrow">▼</span>
@@ -41,7 +41,7 @@
     <!-- Contenu principal -->
     <main class="app-main">
 
-      <!-- Onglets (Lecture / Création) -->
+      <!-- Onglets -->
       <div class="tabs">
         <button class="tab-button tab-button--active" data-tab="scan">
           Lire une fiche (scan QR)
@@ -51,11 +51,11 @@
         </button>
       </div>
 
-      <!-- Vue : Scan / lecture fiche -->
+      <!-- === Onglet : Lecture / Scan === -->
       <section class="tab-panel tab-panel--active" id="tab-scan">
         <div class="cards-layout">
 
-          <!-- Colonne gauche : Scan + prompt -->
+          <!-- Colonne gauche -->
           <div class="card">
             <div class="card-section">
               <div class="button-row">
@@ -72,7 +72,6 @@
 
               <div id="cameraError" class="alert alert-error" hidden></div>
 
-              <!-- Zone vidéo pour html5-qrcode (cachée tant que non utilisée) -->
               <div id="videoBox" class="video-box" hidden>
                 <div id="camera" class="camera-view"></div>
               </div>
@@ -85,28 +84,25 @@
 
             <div class="card-section">
               <h2 class="section-title">Prompt</h2>
-              <!-- Boutons IA -->
+
               <div class="ia-buttons">
-                <button id="btnChatgpt" class="btn-ia" disabled>
-                  ChatGPT
-                </button>
-                <button id="btnPerplexity" class="btn-ia" disabled>
-                  Perplexity
-                </button>
-                <button id="btnMistral" class="btn-ia" disabled>
-                  Mistral
-                </button>
+                <button id="btnChatgpt" class="btn-ia" disabled>ChatGPT</button>
+                <button id="btnPerplexity" class="btn-ia" disabled>Perplexity</button>
+                <button id="btnMistral" class="btn-ia" disabled>Mistral</button>
               </div>
 
               <button id="generatePromptBtn" class="btn btn-primary btn-full-width">
                 Générer le prompt
               </button>
 
-              <textarea id="compiledPrompt" class="prompt-output" placeholder="Prompt IA généré…" readonly></textarea>
+              <textarea id="compiledPrompt"
+                        class="prompt-output"
+                        placeholder="Prompt IA généré…"
+                        readonly></textarea>
             </div>
           </div>
 
-          <!-- Colonne droite : Fiche + variables + infos complémentaires -->
+          <!-- Colonne droite -->
           <div class="card">
             <div class="card-section">
               <div id="ficheMeta" class="fiche-meta fiche-meta--empty">
@@ -115,9 +111,7 @@
             </div>
 
             <div class="card-section">
-              <div id="variablesContainer" class="variables-container">
-                <!-- Champs de variables générés dynamiquement -->
-              </div>
+              <div id="variablesContainer" class="variables-container"></div>
             </div>
 
             <div class="card-section">
@@ -135,7 +129,7 @@
         </div>
       </section>
 
-      <!-- Vue : Création de fiche + QR -->
+      <!-- === Onglet : Création de fiche === -->
       <section class="tab-panel" id="tab-create">
         <div class="card">
           <div class="card-section">
@@ -164,7 +158,7 @@
               </div>
               <div class="form-field">
                 <label for="createVersion">Version</label>
-                <input id="createVersion" type="text" placeholder="ex : V0.3.1" />
+                <input id="createVersion" type="text" placeholder="ex : V0.3.2" />
               </div>
             </div>
           </div>
@@ -219,7 +213,7 @@
           <div class="card-section">
             <h2 class="section-title">Prompt de la fiche</h2>
             <p class="small-hint">
-              Utilisez les identifiants des variables entre <code>{{ }}</code>.<br>
+              Utilisez les identifiants des variables entre <code>{{ }}</code>.
               Exemple : <code>{{code_onu}}</code>
             </p>
             <textarea id="createPrompt"
@@ -253,13 +247,11 @@
 
     </main>
 
-    <!-- Pied de page -->
     <footer class="app-footer">
-      © ENSOSP — Cne Eddy Fischer – Cdt Anne Tirelle — v0.3.1
+      © ENSOSP — Cne Eddy Fischer – Cdt Anne Tirelle — v0.3.2
     </footer>
   </div>
 
-  <!-- Logique JS -->
   <script src="app.js"></script>
 </body>
 </html>

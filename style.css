@@ -20,9 +20,7 @@
   --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
 }
 
-/* ==============
-   Reset minimal
-   ============== */
+/* Reset & base */
 
 *,
 *::before,
@@ -37,9 +35,7 @@ body {
   background-color: var(--color-bg);
 }
 
-/* ==============
-   Layout global
-   ============== */
+/* Layout global */
 
 .app-root {
   min-height: 100vh;
@@ -90,14 +86,11 @@ body {
   background-color: #FFFFFF;
   color: var(--color-primary);
   font-weight: 600;
-  cursor: default;
 }
 
 .lang-switch-arrow {
   font-size: 0.7rem;
 }
-
-/* Main content */
 
 .app-main {
   flex: 1;
@@ -105,8 +98,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
 }
-
-/* Footer */
 
 .app-footer {
   background-color: var(--color-primary);
@@ -116,9 +107,7 @@ body {
   font-size: 0.8rem;
 }
 
-/* ==============
-   Onglets
-   ============== */
+/* Onglets */
 
 .tabs {
   display: flex;
@@ -150,9 +139,7 @@ body {
   display: block;
 }
 
-/* ==============
-   Cards & layout
-   ============== */
+/* Cards & layout */
 
 .cards-layout {
   display: flex;
@@ -189,9 +176,7 @@ body {
   margin: 0 0 8px;
 }
 
-/* ==============
-   Boutons
-   ============== */
+/* Boutons */
 
 .button-row {
   display: flex;
@@ -207,7 +192,6 @@ body {
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.05s ease, box-shadow 0.05s ease, background-color 0.1s ease;
 }
 
 .btn-primary {
@@ -228,10 +212,6 @@ body {
 .btn-full-width {
   width: 100%;
   margin-top: 8px;
-}
-
-.btn:active:not(:disabled) {
-  transform: translateY(1px);
 }
 
 /* Boutons IA */
@@ -269,9 +249,7 @@ body {
   cursor: not-allowed;
 }
 
-/* ==============
-   Inputs & forms
-   ============== */
+/* Inputs & zones de texte */
 
 input[type="text"],
 input[type="number"],
@@ -284,13 +262,7 @@ textarea {
   border: 1px solid var(--color-border);
   font-family: inherit;
   font-size: 0.95rem;
-  outline: none;
   background-color: #FFFFFF;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: var(--color-text-muted);
 }
 
 textarea {
@@ -303,13 +275,6 @@ textarea {
   font-size: 0.9rem;
 }
 
-.file-import label {
-  display: block;
-  margin-bottom: 4px;
-}
-
-/* Prompt / JSON output */
-
 .prompt-output {
   width: 100%;
   margin-top: 8px;
@@ -317,7 +282,7 @@ textarea {
   background-color: #FAFAFA;
 }
 
-/* Fiche meta */
+/* Fiche et variables */
 
 .fiche-meta {
   padding: 10px 12px;
@@ -330,8 +295,6 @@ textarea {
 .fiche-meta--empty {
   color: var(--color-primary);
 }
-
-/* Variables container (lecture) */
 
 .variables-container {
   display: flex;
@@ -355,7 +318,7 @@ textarea {
   margin-left: 4px;
 }
 
-/* Tableau des variables (création) */
+/* Création de fiche : tableau variables */
 
 .variables-table {
   display: flex;
@@ -373,10 +336,6 @@ textarea {
   padding: 0 4px;
 }
 
-.variables-header span:last-child {
-  text-align: right;
-}
-
 #variablesBuilder {
   display: flex;
   flex-direction: column;
@@ -391,10 +350,6 @@ textarea {
   align-items: center;
 }
 
-.variable-row input[type="checkbox"] {
-  width: auto;
-}
-
 .variable-row .var-required {
   display: flex;
   align-items: center;
@@ -402,17 +357,11 @@ textarea {
   font-size: 0.85rem;
 }
 
-.variable-row button {
-  padding-inline: 10px;
-}
-
-/* Infos complémentaires */
+/* Divers */
 
 .infos-textarea {
   min-height: 120px;
 }
-
-/* Hints & alerts */
 
 .small-hint {
   font-size: 0.85rem;
@@ -450,7 +399,7 @@ textarea {
   min-height: 220px;
 }
 
-/* Création de fiche : form layout */
+/* Form grid */
 
 .form-grid {
   display: grid;
@@ -482,9 +431,7 @@ textarea {
   align-items: center;
 }
 
-/* ==============
-   Responsive
-   ============== */
+/* Responsive */
 
 @media (max-width: 900px) {
   .cards-layout {
@@ -495,10 +442,7 @@ textarea {
     flex-direction: column;
   }
 
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
+  .form-grid,
   .form-grid--3 {
     grid-template-columns: 1fr;
   }
