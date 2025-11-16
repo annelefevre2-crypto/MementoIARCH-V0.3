@@ -11,7 +11,7 @@ let html5QrCode = null;
 let isCameraRunning = false;
 let currentFiche = null;
 let currentVariablesValues = {};
-let generatedQrInstance = null; // instance actuelle du QR code (création de fiche)
+let generatedQrInstance = null; // ✅ instance unique du QR code (onglet création)
 
 // =============================
 // Initialisation
@@ -539,17 +539,16 @@ function addVariableRow() {
   builder.appendChild(row);
 }
 
-// Génère le JSON et le QR code à partir du formulaire "création"
 function generateJsonAndQr() {
   const errorBox = document.getElementById("createError");
   const jsonTextarea = document.getElementById("generatedJson");
   const qrContainer = document.getElementById("generatedQr");
   const downloadBtn = document.getElementById("downloadQrBtn");
 
+  // Reset affichage
   errorBox.hidden = true;
   errorBox.textContent = "";
   jsonTextarea.value = "";
-  qrContainer.innerHTML = "";
   downloadBtn.disabled = true;
 
   const categorie = document.getElementById("createCategorie").value.trim();
@@ -571,6 +570,7 @@ function generateJsonAndQr() {
   if (!version) errors.push("La version est obligatoire.");
   if (!prompt.trim()) errors.push("Le prompt de la fiche ne doit pas être vide.");
 
+  // Récupération des variables
   const variables = [];
   const rows = document.querySelectorAll("#variablesBuilder .variable-row");
   const ids = new Set();
@@ -588,17 +588,18 @@ function generateJsonAndQr() {
     const type = selectType.value;
     const obligatoire = checkboxRequired.checked;
 
+    // Ligne vide -> on ignore
     if (!label && !id) return;
 
     if (!label) {
-      errors.push(`Variable #${index + 1} : le label est obligatoire.`);
+      errors.push("Variable #" + (index + 1) + " : le label est obligatoire.");
     }
     if (!id) {
-      errors.push(`Variable #${index + 1} : l'identifiant est obligatoire.`);
+      errors.push("Variable #" + (index + 1) + " : l'identifiant est obligatoire.");
     }
     if (id && ids.has(id)) {
       errors.push(
-        `Variable #${index + 1} : l'identifiant "${id}" est déjà utilisé.`
+        'Variable #' + (index + 1) + ' : l\'identifiant "' + id + '" est déjà utilisé.'
       );
     }
     if (id) ids.add(id);
@@ -617,6 +618,7 @@ function generateJsonAndQr() {
     return;
   }
 
+  // Objet JSON de la fiche
   const ficheObject = {
     categorie: categorie || undefined,
     titre,
@@ -635,6 +637,7 @@ function generateJsonAndQr() {
 
   const cleaned = removeUndefined(ficheObject);
 
+  // Zone "JSON généré"
   const jsonFormatted = JSON.stringify(cleaned, null, 2);
   jsonTextarea.value = jsonFormatted;
 
@@ -645,23 +648,31 @@ function generateJsonAndQr() {
     return;
   }
 
-  // 🔁 Réinitialise proprement l'ancien QR code avant d'en créer un nouveau
-  if (generatedQrInstance) {
-    try {
-      generatedQrInstance.clear();   // efface le canvas interne
-    } catch (e) {
-      console.warn("Erreur lors du clear du QR existant :", e);
+  // ✅ Gestion propre : 1 seule instance, mise à jour à chaque clic
+  if (!generatedQrInstance) {
+    // Première génération
+    generatedQrInstance = new QRCode(qrContainer, {
+      text: jsonMinified,
+      width: 200,
+      height: 200
+    });
+  } else {
+    // Regénération : on réutilise l'instance existante
+    if (typeof generatedQrInstance.clear === "function") {
+      generatedQrInstance.clear();
     }
-    generatedQrInstance = null;
+    if (typeof generatedQrInstance.makeCode === "function") {
+      generatedQrInstance.makeCode(jsonMinified);
+    } else {
+      // Fallback au cas où la lib serait différente
+      qrContainer.innerHTML = "";
+      generatedQrInstance = new QRCode(qrContainer, {
+        text: jsonMinified,
+        width: 200,
+        height: 200
+      });
+    }
   }
-  qrContainer.innerHTML = ""; // nettoie le conteneur HTML
-
-  // ♻️ Nouvelle instance à chaque clic
-  generatedQrInstance = new QRCode("generatedQr", {
-    text: jsonMinified,
-    width: 200,
-    height: 200
-  });
 
   downloadBtn.disabled = false;
 }
