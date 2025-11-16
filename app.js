@@ -640,25 +640,42 @@ function generateJsonAndQr() {
   const jsonFormatted = JSON.stringify(cleaned, null, 2);
   jsonTextarea.value = jsonFormatted;
 
-    const jsonMinified = JSON.stringify(cleaned);
+     const jsonMinified = JSON.stringify(cleaned);
 
   if (typeof QRCode !== "function") {
     alert("La librairie QRCode n'est pas disponible.");
     return;
   }
 
-  // 🔁 On efface totalement le conteneur puis on recrée un QR code neuf
-  console.log("Regénération du QR code avec :", jsonMinified);
-  qrContainer.innerHTML = "";
+  // On tente la génération du QR dans un try/catch pour gérer les dépassements
+  try {
+    // On efface l’ancien QR (canvas / img) à chaque clic
+    qrContainer.innerHTML = "";
 
-  new QRCode(qrContainer, {
-    text: jsonMinified,
-    width: 200,
-    height: 200
-  });
+    // correctLevel L = capacité maximale (moins de redondance, mais parfait pour un JSON)
+    new QRCode(qrContainer, {
+      text: jsonMinified,
+      width: 200,
+      height: 200,
+      correctLevel: QRCode.CorrectLevel.L
+    });
 
-  downloadBtn.disabled = false;
-}
+    downloadBtn.disabled = false;
+  } catch (e) {
+    console.error("Erreur génération QR :", e);
+
+    // Gestion spécifique de l’erreur "code length overflow"
+    if (String(e).includes("code length overflow")) {
+      errorBox.textContent =
+        "Le contenu de la fiche est trop volumineux pour être encodé dans un QR code. " +
+        "Réduisez la taille des textes (objectif, prompt, nombre de variables…) puis réessayez.";
+      errorBox.hidden = false;
+    } else {
+      errorBox.textContent =
+        "Erreur lors de la génération du QR code : " + e.message;
+      errorBox.hidden = false;
+    }
+  }
 }
 
 
