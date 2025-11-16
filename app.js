@@ -11,6 +11,7 @@ let html5QrCode = null;
 let isCameraRunning = false;
 let currentFiche = null;
 let currentVariablesValues = {};
+let generatedQrInstance = null; // instance actuelle du QR code (création de fiche)
 
 // =============================
 // Initialisation
