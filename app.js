@@ -1,6 +1,6 @@
 // ======================================================
 // Mémento opérationnel IA – RCH
-// app.js — Version 0.3.2
+// app.js — Version 0.3.3
 // ------------------------------------------------------
 // - Correction du chargement de Html5Qrcode (CDN officiel)
 // - Instance unique pour caméra + fichiers
