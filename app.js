@@ -457,7 +457,7 @@ function resetScanView() {
 }
 
 // =============================
-// Vue Création de fiche
+// Vue Création de fiche / QR
 // =============================
 
 function initCreateView() {
@@ -467,11 +467,20 @@ function initCreateView() {
 
   addVariableRow();
 
-  addVariableBtn.addEventListener("click", addVariableRow);
-  generateQrBtn.addEventListener("click", generateJsonAndQr);
-  downloadQrBtn.addEventListener("click", downloadGeneratedQr);
+  addVariableBtn.addEventListener("click", () => {
+    addVariableRow();
+  });
+
+  generateQrBtn.addEventListener("click", () => {
+    generateJsonAndQr();
+  });
+
+  downloadQrBtn.addEventListener("click", () => {
+    downloadGeneratedQr();
+  });
 }
 
+// Ajoute une ligne de variable dans le builder (max 10)
 function addVariableRow() {
   const builder = document.getElementById("variablesBuilder");
   const currentRows = builder.querySelectorAll(".variable-row");
@@ -516,7 +525,9 @@ function addVariableRow() {
   deleteBtn.type = "button";
   deleteBtn.className = "btn btn-secondary";
   deleteBtn.textContent = "Supprimer";
-  deleteBtn.addEventListener("click", () => row.remove());
+  deleteBtn.addEventListener("click", () => {
+    row.remove();
+  });
 
   row.appendChild(inputLabel);
   row.appendChild(inputId);
@@ -527,6 +538,7 @@ function addVariableRow() {
   builder.appendChild(row);
 }
 
+// Génère le JSON et le QR code à partir du formulaire "création"
 function generateJsonAndQr() {
   const errorBox = document.getElementById("createError");
   const jsonTextarea = document.getElementById("generatedJson");
@@ -564,6 +576,7 @@ function generateJsonAndQr() {
 
   rows.forEach((row, index) => {
     const inputs = row.querySelectorAll("input, select");
+
     const inputLabel = inputs[0];
     const inputId = inputs[1];
     const selectType = inputs[2];
@@ -576,16 +589,25 @@ function generateJsonAndQr() {
 
     if (!label && !id) return;
 
-    if (!label) errors.push("Variable #" + (index + 1) + " : le label est obligatoire.");
-    if (!id) errors.push("Variable #" + (index + 1) + " : l'identifiant est obligatoire.");
+    if (!label) {
+      errors.push(`Variable #${index + 1} : le label est obligatoire.`);
+    }
+    if (!id) {
+      errors.push(`Variable #${index + 1} : l'identifiant est obligatoire.`);
+    }
     if (id && ids.has(id)) {
       errors.push(
-        'Variable #' + (index + 1) + ' : l\'identifiant "' + id + '" est déjà utilisé.'
+        `Variable #${index + 1} : l'identifiant "${id}" est déjà utilisé.`
       );
     }
     if (id) ids.add(id);
 
-    variables.push({ id, label, type, obligatoire });
+    variables.push({
+      id,
+      label,
+      type,
+      obligatoire
+    });
   });
 
   if (errors.length > 0) {
@@ -611,18 +633,21 @@ function generateJsonAndQr() {
   };
 
   const cleaned = removeUndefined(ficheObject);
+
   const jsonFormatted = JSON.stringify(cleaned, null, 2);
   jsonTextarea.value = jsonFormatted;
 
   const jsonMinified = JSON.stringify(cleaned);
 
+  // Vérifie la présence de la librairie QRCode
   if (typeof QRCode !== "function") {
-    alert("La librairie QRCode n'est pas disponible.");
+    alert("La librairie QRCode n'est pas disponible. Vérifiez le chargement du script qrcodejs.");
     return;
   }
 
+  // Génère le QR code dans l'élément dont l'id est "generatedQr"
   qrContainer.innerHTML = "";
-  new QRCode("generatedQr", {
+  generatedQrInstance = new QRCode("generatedQr", {
     text: jsonMinified,
     width: 200,
     height: 200
@@ -631,19 +656,21 @@ function generateJsonAndQr() {
   downloadBtn.disabled = false;
 }
 
+// Téléchargement de l'image du QR code généré
 function downloadGeneratedQr() {
   const qrContainer = document.getElementById("generatedQr");
   const canvas = qrContainer.querySelector("canvas");
+
   if (!canvas) {
     alert("Aucun QR code à télécharger.");
     return;
   }
+
   const link = document.createElement("a");
   link.href = canvas.toDataURL("image/png");
   link.download = "fiche-ia-qr.png";
   link.click();
 }
-
 // =============================
 // Utilitaires
 // =============================
