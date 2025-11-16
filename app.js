@@ -640,14 +640,23 @@ function generateJsonAndQr() {
 
   const jsonMinified = JSON.stringify(cleaned);
 
-  // Vérifie la présence de la librairie QRCode
   if (typeof QRCode !== "function") {
-    alert("La librairie QRCode n'est pas disponible. Vérifiez le chargement du script qrcodejs.");
+    alert("La librairie QRCode n'est pas disponible.");
     return;
   }
 
-  // Génère le QR code dans l'élément dont l'id est "generatedQr"
-  qrContainer.innerHTML = "";
+  // 🔁 Réinitialise proprement l'ancien QR code avant d'en créer un nouveau
+  if (generatedQrInstance) {
+    try {
+      generatedQrInstance.clear();   // efface le canvas interne
+    } catch (e) {
+      console.warn("Erreur lors du clear du QR existant :", e);
+    }
+    generatedQrInstance = null;
+  }
+  qrContainer.innerHTML = ""; // nettoie le conteneur HTML
+
+  // ♻️ Nouvelle instance à chaque clic
   generatedQrInstance = new QRCode("generatedQr", {
     text: jsonMinified,
     width: 200,
@@ -656,6 +665,7 @@ function generateJsonAndQr() {
 
   downloadBtn.disabled = false;
 }
+
 
 // Téléchargement de l'image du QR code généré
 function downloadGeneratedQr() {
