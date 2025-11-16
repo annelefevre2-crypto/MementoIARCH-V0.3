@@ -11,7 +11,6 @@ let html5QrCode = null;
 let isCameraRunning = false;
 let currentFiche = null;
 let currentVariablesValues = {};
-let generatedQrInstance = null; // ✅ instance unique du QR code (onglet création)
 
 // =============================
 // Initialisation
@@ -641,40 +640,25 @@ function generateJsonAndQr() {
   const jsonFormatted = JSON.stringify(cleaned, null, 2);
   jsonTextarea.value = jsonFormatted;
 
-  const jsonMinified = JSON.stringify(cleaned);
+    const jsonMinified = JSON.stringify(cleaned);
 
   if (typeof QRCode !== "function") {
     alert("La librairie QRCode n'est pas disponible.");
     return;
   }
 
-  // ✅ Gestion propre : 1 seule instance, mise à jour à chaque clic
-  if (!generatedQrInstance) {
-    // Première génération
-    generatedQrInstance = new QRCode(qrContainer, {
-      text: jsonMinified,
-      width: 200,
-      height: 200
-    });
-  } else {
-    // Regénération : on réutilise l'instance existante
-    if (typeof generatedQrInstance.clear === "function") {
-      generatedQrInstance.clear();
-    }
-    if (typeof generatedQrInstance.makeCode === "function") {
-      generatedQrInstance.makeCode(jsonMinified);
-    } else {
-      // Fallback au cas où la lib serait différente
-      qrContainer.innerHTML = "";
-      generatedQrInstance = new QRCode(qrContainer, {
-        text: jsonMinified,
-        width: 200,
-        height: 200
-      });
-    }
-  }
+  // 🔁 On efface totalement le conteneur puis on recrée un QR code neuf
+  console.log("Regénération du QR code avec :", jsonMinified);
+  qrContainer.innerHTML = "";
+
+  new QRCode(qrContainer, {
+    text: jsonMinified,
+    width: 200,
+    height: 200
+  });
 
   downloadBtn.disabled = false;
+}
 }
 
 
